@@ -133,7 +133,7 @@ const Portfolio = () => {
           {isMenuOpen && (
             <nav className="md:hidden mt-4 border-t border-zinc-800 pt-4">
               <div className="flex flex-col gap-2">
-                {['home', 'resume', 'projects', 'contact', 'photography'].map((tab) => (
+                {['home', 'resume', 'projects', 'contact', 'certification'].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => {
