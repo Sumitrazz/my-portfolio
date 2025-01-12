@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import axios from "axios";
 import { GithubIcon, LinkedinIcon, MailIcon, PhoneIcon, ExternalLinkIcon, X, Menu } from 'lucide-react';
 
 const Portfolio = () => {
@@ -6,6 +7,79 @@ const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const currentYear = new Date().getFullYear();
 
+  const [ipAddress, setIpAddress] = useState("");
+  const [ipDetails, setIpDetails] = useState(null);
+  const [error, setError] = useState("");
+
+  const API_KEY = "6a42855a14594143d37319dab03d594b";
+
+  const [visitCount, setVisitCount] = useState(0);
+const [initialized, setInitialized] = useState(false); 
+
+const fetchVisitCount = async () => {
+  try {
+    const response = await axios.get('https://visitcount-3yc4.onrender.com/api/visitCount');
+    setVisitCount(response.data.visitCount);
+    setInitialized(true); 
+  } catch (error) {
+    console.error('Error fetching visit count:', error);
+  }
+};
+
+const incrementVisitCount = async () => {
+  try {
+    await axios.post('https://visitcount-3yc4.onrender.com/api/incrementVisit', { count: visitCount + 1 });
+  } catch (error) {
+    console.error('Error updating visit count:', error);
+  }
+};
+
+useEffect(() => {
+  fetchVisitCount();
+}, []);
+
+useEffect(() => {
+  if (initialized) { 
+    incrementVisitCount();
+  }
+}, [initialized, visitCount]);
+
+
+
+  useEffect(() => {
+    const fetchIpAddress = async () => {
+      try {
+        const response = await axios.get("https://api.ipify.org?format=json");
+        setIpAddress(response.data.ip);
+      } catch (err) {
+        setError("Error fetching IP address: " + err.message);
+      }
+    };
+
+    fetchIpAddress();
+  }, []);
+
+  useEffect(() => {
+    if (ipAddress) {
+
+      const fetchIpDetails = async () => {
+        try {
+          const response = await axios.get(
+            `http://api.ipstack.com/${ipAddress}?access_key=${API_KEY}`
+          );
+          setIpDetails(response.data);
+        } catch (err) {
+          setError("Error fetching IP details: " + err.message);
+        }
+      };
+
+      fetchIpDetails();
+    }
+  }, [ipAddress, API_KEY]);
+
+  console.log("details"+ ipDetails)
+
+  
 
 
   const skills = {
@@ -353,6 +427,9 @@ const Portfolio = () => {
             <p className="text-zinc-400 text-sm">
               © {currentYear} Sumit kumar
             </p>
+            <h1 className=' text-white'>Visit Count: {visitCount}</h1>
+             {/* <p className=' text-white  hidden md:block'>IP Adreess: {ipAddress}</p> */}
+
             <div className="flex gap-4">
               <a href="mailto:s4sumit30@gmail.com" className="text-zinc-400 hover:text-sky-400 transition-colors">
                 <MailIcon size={18} />
