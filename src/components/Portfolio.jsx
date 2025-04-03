@@ -44,7 +44,55 @@ useEffect(() => {
   }
 }, [initialized, visitCount]);
 
+// right Click
 
+useEffect(() => {
+  // Disable right-click
+  const disableRightClick = (e) => {
+    e.preventDefault();
+  };
+
+  const handleKeyDown = (e) => {
+    // Block F12 (DevTools)
+    if (e.key === 'F12') {
+      e.preventDefault();
+    }
+    // Block Cmd + Opt + I (Mac DevTools)
+    if (e.metaKey && e.altKey && e.key === 'I') {
+      e.preventDefault();
+    }
+    // Block Cmd + Opt + J (Mac DevTools Console)
+    if (e.metaKey && e.altKey && e.key === 'J') {
+      e.preventDefault();
+    }
+    // Block Cmd + U (View Source on Mac)
+    if (e.metaKey && e.key === 'U') {
+      e.preventDefault();
+    }
+    // Block Ctrl + Shift + I (DevTools on Windows/Linux)
+    if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+      e.preventDefault();
+    }
+    // Block Ctrl + Shift + C (Inspect Element on Windows/Linux)
+    if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+      e.preventDefault();
+    }
+    // Block Ctrl + Shift + J (DevTools Console on Windows/Linux)
+    if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+      e.preventDefault();
+    }
+  };
+
+  window.addEventListener('contextmenu', disableRightClick);
+  window.addEventListener('keydown', handleKeyDown);
+
+  return () => {
+    window.removeEventListener('contextmenu', disableRightClick);
+    window.removeEventListener('keydown', handleKeyDown);
+  };
+}, []);
+
+//
 
   useEffect(() => {
     const fetchIpAddress = async () => {
@@ -170,7 +218,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900 pb-16 relative">
+    <div className="min-h-screen  bg-zinc-900 pb-16 relative">
       <header className="sticky top-0 z-50 bg-zinc-900 border-b border-zinc-800">
         <div className="max-w-5xl mx-auto px-8 py-4">
           <div className="flex items-center justify-between">
